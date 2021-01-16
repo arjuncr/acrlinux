@@ -4,7 +4,7 @@ use build_x86_64.sh for building os (x86_64)
 
 For cloning the repo.
 
-git clone --recurse-submodules https://github.com/arjuncr/acrlinux
+git clone --recurse-submodules https://github.com/arjuncr/acrlinux.git
 
 Update existing repo to latest.
 
