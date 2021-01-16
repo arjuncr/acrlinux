@@ -30,6 +30,7 @@ export BOOT_SCRIPT_DIR="boot_script"
 export NET_SCRIPT="network"
 export CONFIG_ETC_DIR="${BASEDIR}/os-configs/etc"
 export WORKSPACE="${BASEDIR}/workspace"
+export BASE_SYSTEM=${BASEDIR}/acrlinux-bases-root/basesystem/
 
 #cross compile
 CROSS_COMPILE64=$BASEDIR/cross_gcc/x86_64-linux/bin/x86_64-linux-
@@ -123,7 +124,7 @@ build_kernel () {
 	 echo "building $ARCH acrlinux kernel"
     	 make oldconfig CROSS_COMPILE=$CROSS_COMPILE ARCH=$ARCH bzImage \
         	-j ${JFLAG}
-        cp arch/x86/boot/bzImage ${ISODIR}/kernel.gz
+        cp arch/x86/boot/bzImage ${ISODIR}/vmlinuz-$KERNEL_VERSION-amd64
     fi   
 }
 
@@ -182,6 +183,8 @@ generate_rootfs () {
    echo "generating rootfs..."
     cd ${ROOTFSDIR}
 
+    cp  -r ${BASE_SYSTEM} .
+
     cd etc
     
     cp $BASE_ROOTFS/etc/motd .
@@ -194,14 +197,10 @@ generate_rootfs () {
 
     cp $BASE_ROOTFS/etc/profile .
 
-    install -m ${MODE}     ${BASEDIR}/${BOOT_SCRIPT_DIR}/rc.d/startup              rcS.d/startup
-    install -m ${MODE}     ${BASEDIR}/${BOOT_SCRIPT_DIR}/rc.d/shutdown             init.d/shutdown
+#    install -m ${MODE}     ${BASEDIR}/${BOOT_SCRIPT_DIR}/rc.d/startup              rcS.d/startup
+#    install -m ${MODE}     ${BASEDIR}/${BOOT_SCRIPT_DIR}/rc.d/shutdown             init.d/shutdown
 	
     cp $BASE_ROOTFS/etc/inittab .
-
-    cp $BASE_ROOTFS/etc/group .
-
-    cp $BASE_ROOTFS/etc/passwd .
 
     cd ${ROOTFSDIR}
 
@@ -224,7 +223,8 @@ generate_rootfs () {
     chown root:tty dev/{console,ptmx,tty,tty1,tty2,tty3,tty4}
 
     # sudo chown -R root:root .
-    find . | cpio -R root:root -H newc -o | gzip > ${ISODIR}/rootfs.gz
+#    find . | cpio -R root:root -H newc -o | gzip > ${ISODIR}/rootfs.gz
+     cp -r ${ROOTFSDIR}/* ${ISODIR}/
 }
 
 
