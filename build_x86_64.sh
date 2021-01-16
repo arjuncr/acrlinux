@@ -183,7 +183,7 @@ generate_rootfs () {
    echo "generating rootfs..."
     cd ${ROOTFSDIR}
 
-    cp  -r ${BASE_SYSTEM} .
+    cp  -r ${BASE_SYSTEM}/* .
 
     cd etc
     
