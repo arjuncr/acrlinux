@@ -3,13 +3,23 @@
 # System Startup Script
 # 
 
-/bin/mount -t proc none /proc
-/bin/mount -t sysfs none /sys
+
+mkdir -p /run
+mount -n /run
+mkdir -p /run/{var,lock,shm}
+chmod 1777 /run/shm
+
+/bin/mount -n -o nosuid,noexec,nodev /proc
+/bin/mount -n -o nosuid,noexec,nodev /sys
+/bin/mount -n -o mode=0755,nosuid /dev
 /bin/mount -t tmpfs /tmp /tmp
 /bin/mount -t tmpfs -o mode=0755 none /dev
+
 /bin/mkdir /dev/pts
-/bin/mkdir /dev/shm
+ln -s /run/shm /dev/shm
+
 /bin/mount -t tmpfs -o mode=0755 /var /var
+
 for x in cache lib lib/misc lib/locate local lock log mail opt run spool; do mkdir /var/$x; done
 ln -s ../tmp /var/tmp
 
@@ -49,7 +59,7 @@ if [ -x /sbin/swapon ]; then
 fi
 
 echo -n "Remounting root rw: "
-mount -o remount,rw /
+mount -n -o remount,rw / >/dev/null
 
 echo -n "Setting hostname: "
 echo "acrlinux">/etc/hostname
@@ -66,24 +76,6 @@ rm -rf /tmp/*
 rm -f /var/run/*.pid
 
 echo -n "Setting up interface lo: "
-ifconfig lo up 127.0.0.1
+ip addr add 127.0.0.1/8 label lo dev lo
+ip link set lo up
 
-echo -n "setting eth0 ip"
-ifconfig eth0 up
-
-#echo "Running start scripts."
-
-#runlevel=S
-#prevlevel=N
-#umask 022
-#export runlevel prevlevel 
-#trap ":" INT QUIT TSTP
-
-
-#  for i in /etc/rcS.d/S??*
-#  do
-#     [ ! -f  "$i" ] && continue;
-#     $i start       
-#  done
-
-exit 0
