@@ -1,6 +1,3 @@
 [submodule "light-os"]
 	path = light-os
 	url = https://github.com/arjuncr/light-os.git
-[submodule "acrlinux-bases-root"]
-	path = acrlinux-bases-root
-	url = https://github.com/arjuncr/acrlinux-bases-root.git
