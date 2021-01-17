@@ -3,16 +3,17 @@ name: CI
 on: [push]
 
 jobs:
-  build_64:
+  build_x86_64:
 
     runs-on: ubuntu-latest
 
     steps:
     - name: Installing build dep
-      run: sudo apt install bison flex libelf-dev
+      run: sudo apt install bison flex libelf-dev mtools
     - name: Running script to build acrlinux 64 bit os
       run: |
         git clone --recurse-submodules https://github.com/arjuncr/acrlinux.git
+        cd acrlinux
         ./build_x86_64.sh --build-img 12 64
 
     - name: Upload a Build Artifact
@@ -26,26 +27,3 @@ jobs:
       with:
         # Destination path
         path:  /home/runner/work/acrlinux/acrlinux/acrlinux/output/  
-  build_32:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Installing build dep
-      run: sudo apt install bison flex libelf-dev
-    - name: Running script to build acrlinux 32 bit os
-      run: |
-        git clone --recurse-submodules https://github.com/arjuncr/acrlinux.git
-        ./build_x86_64.sh --build-img 12 32
-
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        # A file, directory or wildcard pattern that describes what to upload
-         path: /home/runner/work/acrlinux/acrlinux/acrlinux/image/
-         
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v2
-      with:
-        # Destination path
-        path:  /home/runner/work/acrlinux/acrlinux/acrlinux/output/    

@@ -184,6 +184,8 @@ generate_rootfs () {
     cd ${ROOTFSDIR}
 
     cp  -r ${BASE_SYSTEM}/* .
+     
+    cp  ${ISODIR}/vmlinuz-$KERNEL_VERSION-amd64 ${ROOTFSDIR}/
 
     cd etc
     
@@ -221,59 +223,18 @@ generate_rootfs () {
     mknod -m 666 dev/kmem c 1 2
 
     chown root:tty dev/{console,ptmx,tty,tty1,tty2,tty3,tty4}
-
-    # sudo chown -R root:root .
-#    find . | cpio -R root:root -H newc -o | gzip > ${ISODIR}/rootfs.gz
-     cp -r ${ROOTFSDIR}/* ${ISODIR}/
 }
 
 
 generate_image () {
     echo "generateting iso image..."
-    
-    cd ${SOURCEDIR}/syslinux-${SYSLINUX_VERSION}
-    
-    cp bios/core/isolinux.bin ${ISODIR}/
-    cp bios/com32/elflink/ldlinux/ldlinux.c32 ${ISODIR}
-    cp bios/com32/libutil/libutil.c32 ${ISODIR}
-    cp bios/com32/menu/menu.c32 ${ISODIR}
-    
-    cd ${ISODIR}
-    
-    rm isolinux.cfg && touch isolinux.cfg
-    
-    echo 'default kernel.gz initrd=rootfs.gz' >> isolinux.cfg
-    echo 'UI menu.c32 ' >> isolinux.cfg
-    echo 'PROMPT 0 ' >> isolinux.cfg
-    echo >> isolinux.cfg
-    echo 'MENU TITLE ACR LINUX 2019.11 /'${SCRIPT_VERSION}': ' >> isolinux.cfg
-    echo 'TIMEOUT 60 ' >> isolinux.cfg
-    echo 'DEFAULT acr linux ' >> isolinux.cfg
-    echo >> isolinux.cfg
-    echo 'LABEL acr linux ' >> isolinux.cfg
-    echo ' MENU LABEL START ACR LINUX [KERNEL:'${KERNEL_VERSION}']' >> isolinux.cfg
-    echo ' KERNEL kernel.gz ' >> isolinux.cfg
-    echo ' APPEND initrd=rootfs.gz' >> isolinux.cfg
-    echo >> isolinux.cfg
-    echo 'LABEL acr_linux_vga ' >> isolinux.cfg
-    echo ' MENU LABEL CHOOSE RESOLUTION ' >> isolinux.cfg
-    echo ' KERNEL kernel.gz ' >> isolinux.cfg
-    echo ' APPEND initrd=rootfs.gz vga=ask ' >> isolinux.cfg
 
-    if [ -f ${BASEDIR}/output/${ISO_FILENAME} ]
+    if [ -f ${BASEDIR}/image/${ISO_FILENAME} ]
     then
-    rm ${BASEDIR}/output/${ISO_FILENAME}
+	    rm ${BASEDIR}/image/${ISO_FILENAME}
     fi
 
-    xorriso \
-        -as mkisofs \
-        -o ${BASEDIR}/image/${ISO_FILENAME} \
-        -b isolinux.bin \
-        -c boot.cat \
-        -no-emul-boot \
-        -boot-load-size 4 \
-        -boot-info-table \
-        ./
+    grub-mkrescue -o ${BASEDIR}/image/${ISO_FILENAME} ${ROOTFSDIR}
 }
 
 test_qemu () {
