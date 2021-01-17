@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Installing build dep
-      run: sudo apt install bison flex libelf-dev
+      run: sudo apt install bison flex libelf-dev mtools
     - name: Running script to build acrlinux 64 bit os
       run: |
         git clone --recurse-submodules https://github.com/arjuncr/acrlinux.git
@@ -33,7 +33,7 @@ jobs:
 
     steps:
     - name: Installing build dep
-      run: sudo apt install bison flex libelf-dev
+      run: sudo apt install bison flex libelf-dev mtools
     - name: Running script to build acrlinux 32 bit os
       run: |
         git clone --recurse-submodules https://github.com/arjuncr/acrlinux.git
