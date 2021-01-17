@@ -13,6 +13,7 @@ jobs:
     - name: Running script to build acrlinux 64 bit os
       run: |
         git clone --recurse-submodules https://github.com/arjuncr/acrlinux.git
+        cd acrlinux
         ./build_x86_64.sh --build-img 12 64
 
     - name: Upload a Build Artifact
@@ -36,6 +37,7 @@ jobs:
     - name: Running script to build acrlinux 32 bit os
       run: |
         git clone --recurse-submodules https://github.com/arjuncr/acrlinux.git
+        cd acrlinux
         ./build_x86_64.sh --build-img 12 32
 
     - name: Upload a Build Artifact
