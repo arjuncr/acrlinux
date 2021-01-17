@@ -229,20 +229,19 @@ generate_rootfs () {
 generate_image () {
     echo "generateting iso image..."
 
-    if [ -f ${BASEDIR}/output/${ISO_FILENAME} ]
+    if [ -f ${BASEDIR}/image/${ISO_FILENAME} ]
     then
-	    rm ${BASEDIR}/output/${ISO_FILENAME}
+	    rm ${BASEDIR}/image/${ISO_FILENAME}
     fi
 
-    grub-mkrescue -o ${BASEDIR}/output/${ISO_FILENAME} ${ROOTFSDIR}
-
+    grub-mkrescue -o ${BASEDIR}/image/${ISO_FILENAME} ${ROOTFSDIR}
 }
 
 test_qemu () {
   cd ${BASEDIR}
-    if [ -f ${BASEDIR}/output/${ISO_FILENAME} ];
+    if [ -f ${BASEDIR}/image/${ISO_FILENAME} ];
     then
-       qemu-system-x86_64 -m 128M -cdrom ${BASEDIR}/output/${ISO_FILENAME} -boot d -vga std
+       qemu-system-x86_64 -m 128M -cdrom ${BASEDIR}/image/${ISO_FILENAME} -boot d -vga std
     fi
 }
 
